@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Preprocessing - Insurance ML{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="mb-4">
+                <i class="fas fa-cogs text-primary"></i> Data Preprocessing
+            </h1>
+            <p class="lead">Data cleaning and preparation for machine learning models</p>
+        </div>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-triangle"></i> {{ error }}
+    </div>
+    {% else %}
+
+    <!-- Before vs After Comparison -->
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5><i class="fas fa-times"></i> Before Preprocessing</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6 text-center">
+                            <h4 class="text-danger">{{ before_stats.missing_values }}</h4>
+                            <p class="text-muted">Missing Values</p>
+                        </div>
+                        <div class="col-6 text-center">
+                            <h4 class="text-info">{{ before_stats.shape[0] }} × {{ before_stats.shape[1] }}</h4>
+                            <p class="text-muted">Shape (Rows × Cols)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-check"></i> After Preprocessing</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6 text-center">
+                            <h4 class="text-success">{{ after_stats.missing_values }}</h4>
+                            <p class="text-muted">Missing Values</p>
+                        </div>
+                        <div class="col-6 text-center">
+                            <h4 class="text-info">{{ after_stats.shape[0] }} × {{ after_stats.shape[1] }}</h4>
+                            <p class="text-muted">Shape (Rows × Cols)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preprocessing Steps -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-list-ol"></i> Preprocessing Steps Applied</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for step in preprocessing_steps %}
+                        <div class="col-lg-6 mb-3">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <span class="badge bg-primary rounded-pill">{{ loop.index }}</span>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <p class="mb-0">{{ step }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Before Sample -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-table"></i> Before Preprocessing - Sample Data</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        {{ before_sample|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- After Sample -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-table"></i> After Preprocessing - Sample Data</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        {{ after_sample|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preprocessing Techniques Details -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> Preprocessing Techniques Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="preprocessingAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                    Missing Value Imputation
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#preprocessingAccordion">
+                                <div class="accordion-body">
+                                    <p><strong>Problem:</strong> Missing values represented as -1 in the dataset.</p>
+                                    <p><strong>Solution:</strong></p>
+                                    <ul>
+                                        <li>Binary and categorical features: Imputed with mode (most frequent value)</li>
+                                        <li>Continuous features: Imputed with median to handle outliers</li>
+                                    </ul>
+                                    <p><strong>Impact:</strong> Ensures all features have complete data for model training.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                    Feature Scaling
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#preprocessingAccordion">
+                                <div class="accordion-body">
+                                    <p><strong>Technique:</strong> StandardScaler (Z-score normalization)</p>
+                                    <p><strong>Purpose:</strong> Ensures all features have similar scales for algorithms like SVM and Neural Networks.</p>
+                                    <p><strong>Formula:</strong> (x - mean) / standard_deviation</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                    Class Imbalance Handling
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#preprocessingAccordion">
+                                <div class="accordion-body">
+                                    <p><strong>Technique:</strong> SMOTE (Synthetic Minority Oversampling Technique)</p>
+                                    <p><strong>Problem:</strong> Very few positive claims (class imbalance)</p>
+                                    <p><strong>Solution:</strong> Generate synthetic examples of minority class to balance the dataset</p>
+                                    <p><strong>Benefit:</strong> Improves model performance on minority class prediction</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+</div>
+{% endblock %}

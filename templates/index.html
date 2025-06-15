@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 mb-4">Insurance Claim Prediction</h1>
+                <p class="lead mb-4">
+                    Advanced machine learning application for predicting insurance claims using the Porto Seguro dataset.
+                    Analyze data, train models, and make predictions with state-of-the-art algorithms.
+                </p>
+                <a href="{{ url_for('data_analysis') }}" class="btn btn-light btn-lg me-3">
+                    <i class="fas fa-chart-bar"></i> Start Analysis
+                </a>
+                <a href="{{ url_for('prediction') }}" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-brain"></i> Make Prediction
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12 text-center mb-5">
+            <h2>Application Features</h2>
+            <p class="text-muted">Comprehensive machine learning pipeline for insurance risk assessment</p>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-database"></i>
+                </div>
+                <h5>Data Analysis</h5>
+                <p class="text-muted">
+                    Comprehensive analysis of the Porto Seguro dataset including statistics, 
+                    missing values, and feature distributions.
+                </p>
+                <a href="{{ url_for('data_analysis') }}" class="btn btn-primary mt-auto">Explore Data</a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h5>Data Preprocessing</h5>
+                <p class="text-muted">
+                    Advanced preprocessing techniques including missing value imputation, 
+                    feature encoding, and class imbalance handling.
+                </p>
+                <a href="{{ url_for('preprocessing') }}" class="btn btn-primary mt-auto">View Processing</a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h5>Visualization</h5>
+                <p class="text-muted">
+                    Interactive visualizations including correlation matrices, 
+                    distribution plots, and feature importance analysis.
+                </p>
+                <a href="{{ url_for('visualization') }}" class="btn btn-primary mt-auto">View Charts</a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h5>Model Training</h5>
+                <p class="text-muted">
+                    Multiple machine learning algorithms including Random Forest, 
+                    SVM, Neural Networks, and more with performance comparison.
+                </p>
+                <a href="{{ url_for('prediction') }}" class="btn btn-primary mt-auto">Train Models</a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <h5>Predictions</h5>
+                <p class="text-muted">
+                    Real-time predictions with confidence scores and risk assessment 
+                    for new insurance applications.
+                </p>
+                <a href="{{ url_for('prediction') }}" class="btn btn-primary mt-auto">Make Prediction</a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h5>About Team</h5>
+                <p class="text-muted">
+                    Meet the team behind this project and learn about the 
+                    technologies and methodologies used.
+                </p>
+                <a href="{{ url_for('about') }}" class="btn btn-primary mt-auto">Meet Team</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">About This Project</h3>
+                    <p>
+                        This application demonstrates a complete machine learning pipeline for insurance claim prediction 
+                        using the Porto Seguro dataset. The project includes:
+                    </p>
+                    <ul>
+                        <li><strong>Data Analysis:</strong> Comprehensive exploration of the dataset structure and characteristics</li>
+                        <li><strong>Preprocessing:</strong> Advanced data cleaning and preparation techniques</li>
+                        <li><strong>Visualization:</strong> Interactive charts and graphs for data insights</li>
+                        <li><strong>Model Training:</strong> Multiple ML algorithms with performance comparison</li>
+                        <li><strong>Prediction:</strong> Real-time risk assessment for new applications</li>
+                    </ul>
+                    <p>
+                        The goal is to help insurance companies make better decisions about policy pricing 
+                        and risk assessment while maintaining fairness and transparency.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

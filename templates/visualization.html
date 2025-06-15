@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Visualization - Insurance ML{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="mb-4">
+                <i class="fas fa-chart-line text-primary"></i> Data Visualization
+            </h1>
+            <p class="lead">Interactive visualizations and insights from the insurance dataset</p>
+        </div>
+    </div>
+
+    <!-- Target Distribution -->
+    {% if plots.target_distribution %}
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-bar"></i> Target Variable Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <div class="plot-container">
+                        <img src="data:image/png;base64,{{ plots.target_distribution }}" alt="Target Distribution" class="img-fluid">
+                    </div>
+                    <p class="text-muted mt-3">
+                        This chart shows the distribution of claims vs no-claims in the dataset, 
+                        highlighting the class imbalance typical in insurance data.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Missing Values Pattern</h5>
+                </div>
+                <div class="card-body">
+                    <div class="plot-container">
+                        <img src="data:image/png;base64,{{ plots.missing_values }}" alt="Missing Values" class="img-fluid">
+                    </div>
+                    <p class="text-muted mt-3">
+                        Analysis of missing values across different features. Missing values 
+                        are represented as -1 in the original dataset.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Correlation Matrix -->
+    {% if plots.correlation_matrix %}
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-th"></i> Feature Correlation Matrix</h5>
+                </div>
+                <div class="card-body">
+                    <div class="plot-container">
+                        <img src="data:image/png;base64,{{ plots.correlation_matrix }}" alt="Correlation Matrix" class="img-fluid">
+                    </div>
+                    <p class="text-muted mt-3">
+                        Correlation heatmap showing relationships between numerical features. 
+                        Strong correlations (positive or negative) are highlighted in darker colors.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Visualization Insights -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-lightbulb"></i> Visualization Insights</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-balance-scale text-warning"></i> Class Imbalance</h6>
+                            <p class="text-muted">
+                                The target distribution shows significant class imbalance with approximately 
+                                96% no-claims and 4% claims, which is typical in insurance datasets.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-link text-info"></i> Feature Correlations</h6>
+                            <p class="text-muted">
+                                The correlation matrix reveals relationships between features that can 
+                                help in feature selection and understanding data patterns.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-question-circle text-danger"></i> Missing Data Patterns</h6>
+                            <p class="text-muted">
+                                Missing values analysis helps identify which features need imputation 
+                                and whether missing patterns are random or systematic.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-chart-area text-success"></i> Feature Distributions</h6>
+                            <p class="text-muted">
+                                Understanding feature distributions helps in choosing appropriate 
+                                preprocessing techniques and model selection.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Analysis -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-tags"></i> Feature Group Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center">
+                            <div class="feature-group-card p-3 border rounded">
+                                <i class="fas fa-user fa-2x text-primary mb-2"></i>
+                                <h6>Individual Features (ind)</h6>
+                                <p class="text-muted small">Personal information about the policyholder</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="feature-group-card p-3 border rounded">
+                                <i class="fas fa-map-marker-alt fa-2x text-success mb-2"></i>
+                                <h6>Regional Features (reg)</h6>
+                                <p class="text-muted small">Location-based information and regional factors</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="feature-group-card p-3 border rounded">
+                                <i class="fas fa-car fa-2x text-warning mb-2"></i>
+                                <h6>Car Features (car)</h6>
+                                <p class="text-muted small">Vehicle-specific attributes and characteristics</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="feature-group-card p-3 border rounded">
+                                <i class="fas fa-calculator fa-2x text-info mb-2"></i>
+                                <h6>Calculated Features (calc)</h6>
+                                <p class="text-muted small">Derived features computed by Porto Seguro</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.feature-group-card {
+    transition: transform 0.2s;
+}
+.feature-group-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+</style>
+{% endblock %}

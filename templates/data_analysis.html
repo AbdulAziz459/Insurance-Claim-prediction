@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Data Analysis - Insurance ML{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="mb-4">
+                <i class="fas fa-chart-bar text-primary"></i> Data Analysis
+            </h1>
+            <p class="lead">Comprehensive analysis of the Porto Seguro insurance dataset</p>
+        </div>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-triangle"></i> {{ error }}
+    </div>
+    {% else %}
+    
+    <!-- Dataset Overview -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> Dataset Overview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h3 class="text-primary">{{ stats.total_rows }}</h3>
+                                <p class="text-muted">Total Rows</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h3 class="text-success">{{ stats.total_columns }}</h3>
+                                <p class="text-muted">Total Columns</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h3 class="text-warning">{{ stats.missing_values }}</h3>
+                                <p class="text-muted">Missing Values</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h3 class="text-info">{{ stats.target_distribution.get('0', 0) + stats.target_distribution.get('1', 0) }}</h3>
+                                <p class="text-muted">Total Records</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Types -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-tags"></i> Feature Types Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h4 class="text-primary">{{ stats.feature_types.binary }}</h4>
+                                <p class="text-muted">Binary Features</p>
+                                <small>Features ending with '_bin'</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h4 class="text-success">{{ stats.feature_types.categorical }}</h4>
+                                <p class="text-muted">Categorical Features</p>
+                                <small>Features ending with '_cat'</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h4 class="text-info">{{ stats.feature_types.continuous }}</h4>
+                                <p class="text-muted">Continuous Features</p>
+                                <small>Numerical features</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Target Distribution -->
+    {% if stats.target_distribution %}
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-bullseye"></i> Target Variable Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <div class="plot-container">
+                        <img src="data:image/png;base64,{{ target_plot }}" alt="Target Distribution">
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-6 text-center">
+                            <h5 class="text-success">{{ stats.target_distribution.get('0', 0) }}</h5>
+                            <p class="text-muted">No Claims (0)</p>
+                        </div>
+                        <div class="col-6 text-center">
+                            <h5 class="text-danger">{{ stats.target_distribution.get('1', 0) }}</h5>
+                            <p class="text-muted">Claims (1)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Missing Values Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <div class="plot-container">
+                        <img src="data:image/png;base64,{{ missing_plot }}" alt="Missing Values">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Sample Data -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-table"></i> Sample Data (First 5 Rows)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        {{ sample_data|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Insights -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-lightbulb"></i> Key Insights</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Class Imbalance:</strong> The dataset shows significant class imbalance with very few positive claims, 
+                            which is typical in insurance datasets.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Feature Diversity:</strong> The dataset contains a mix of binary, categorical, and continuous features 
+                            representing individual, regional, car, and calculated attributes.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Missing Values:</strong> Missing values are represented as -1 and will need to be handled during preprocessing.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Feature Groups:</strong> Features are organized into logical groups (ind, reg, car, calc) 
+                            which can help in feature engineering and analysis.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+</div>
+{% endblock %}

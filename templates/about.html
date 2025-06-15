@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}About - Insurance ML{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="mb-4">
+                <i class="fas fa-users text-primary"></i> About Our Team
+            </h1>
+            <p class="lead">Meet the team behind this insurance claim prediction project</p>
+        </div>
+    </div>
+
+    <!-- Team Members -->
+    <div class="row">
+        {% for member in team_members %}
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-user-circle fa-5x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">{{ member.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ member.role }}</h6>
+                    <p class="card-text">{{ member.description }}</p>
+                    
+                    <div class="mb-3">
+                        <h6>Skills:</h6>
+                        {% for skill in member.skills %}
+                        <span class="badge bg-secondary me-1">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Project Information -->
+    <div class="row mt-5">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-project-diagram"></i> Project Overview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Project Goals</h6>
+                            <ul>
+                                <li>Develop accurate insurance claim prediction models</li>
+                                <li>Create an intuitive web interface for data analysis</li>
+                                <li>Implement comprehensive data preprocessing pipeline</li>
+                                <li>Compare multiple machine learning algorithms</li>
+                                <li>Provide transparent and explainable predictions</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Technologies Used</h6>
+                            <ul>
+                                <li><strong>Backend:</strong> Python, Flask</li>
+                                <li><strong>Machine Learning:</strong> Scikit-learn, Pandas, NumPy</li>
+                                <li><strong>Visualization:</strong> Matplotlib, Seaborn</li>
+                                <li><strong>Frontend:</strong> HTML5, CSS3, Bootstrap 5, JavaScript</li>
+                                <li><strong>Data Processing:</strong> SMOTE, StandardScaler</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dataset Information -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-database"></i> Dataset Information</h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        This project uses the <strong>Porto Seguro Safe Driver Prediction</strong> dataset, 
+                        which contains anonymized features representing various aspects of insurance policies and policyholders.
+                    </p>
+                    
+                    <div class="row">
+                        <div class="col-md-3 text-center">
+                            <h4 class="text-primary">57</h4>
+                            <p class="text-muted">Total Features</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <h4 class="text-success">4</h4>
+                            <p class="text-muted">Feature Groups</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <h4 class="text-warning">Binary</h4>
+                            <p class="text-muted">Categorical & Continuous</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <h4 class="text-info">Imbalanced</h4>
+                            <p class="text-muted">Target Distribution</p>
+                        </div>
+                    </div>
+
+                    <h6 class="mt-4">Feature Groups:</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul>
+                                <li><strong>ind:</strong> Individual/personal features</li>
+                                <li><strong>reg:</strong> Regional/location features</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul>
+                                <li><strong>car:</strong> Vehicle-related features</li>
+                                <li><strong>calc:</strong> Calculated/derived features</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Machine Learning Models -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-brain"></i> Machine Learning Models</h5>
+                </div>
+                <div class="card-body">
+                    <p>Our application implements and compares seven different machine learning algorithms:</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="list-group">
+                                <div class="list-group-item">
+                                    <h6 class="mb-1">Random Forest</h6>
+                                    <p class="mb-1">Ensemble method using multiple decision trees</p>
+                                    <small>Best for: Feature importance, handling mixed data types</small>
+                                </div>
+                                <div class="list-group-item">
+                                    <h6 class="mb-1">Logistic Regression</h6>
+                                    <p class="mb-1">Linear model for binary classification</p>
+                                    <small>Best for: Interpretability, baseline performance</small>
+                                </div>
+                                <div class="list-group-item">
+                                    <h6 class="mb-1">Support Vector Machine</h6>
+                                    <p class="mb-1">Kernel-based classification method</p>
+                                    <small>Best for: High-dimensional data, non-linear patterns</small>
+                                </div>
+                                <div class="list-group-item">
+                                    <h6 class="mb-1">K-Nearest Neighbors</h6>
+                                    <p class="mb-1">Instance-based learning algorithm</p>
+                                    <small>Best for: Local patterns, non-parametric classification</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="list-group">
+                                <div class="list-group-item">
+                                    <h6 class="mb-1">Decision Tree</h6>
+                                    <p class="mb-1">Tree-based rule learning method</p>
+                                    <small>Best for: Interpretability, handling categorical features</small>
+                                </div>
+                                <div class="list-group-item">
+                                    <h6 class="mb-1">Naive Bayes</h6>
+                                    <p class="mb-1">Probabilistic classifier based on Bayes' theorem</p>
+                                    <small>Best for: Text classification, fast training</small>
+                                </div>
+                                <div class="list-group-item">
+                                    <h6 class="mb-1">Neural Network</h6>
+                                    <p class="mb-1">Multi-layer perceptron for complex patterns</p>
+                                    <small>Best for: Non-linear relationships, large datasets</small>
+                                </div>
+                                <div class="list-group-item">
+                                    <h6 class="mb-1">Performance Target</h6>
+                                    <p class="mb-1">Minimum 90% accuracy requirement</p>
+                                    <small>Achieved through careful preprocessing and tuning</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Information -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-envelope"></i> Contact & Resources</h5>
+                </div>
+                <div class="card-body text-center">
+                    <p>For questions about this project or collaboration opportunities:</p>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <i class="fas fa-code fa-2x text-primary mb-2"></i>
+                            <h6>Source Code</h6>
+                            <p class="text-muted">Available on GitHub with documentation</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-chart-bar fa-2x text-success mb-2"></i>
+                            <h6>Dataset</h6>
+                            <p class="text-muted">Porto Seguro Safe Driver Prediction</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-graduation-cap fa-2x text-info mb-2"></i>
+                            <h6>Academic Project</h6>
+                            <p class="text-muted">Machine Learning Course Assignment</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

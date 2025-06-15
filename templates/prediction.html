@@ -1,0 +1,684 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction - Insurance ML{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="mb-4">
+                <i class="fas fa-brain text-primary"></i> Model Training & Prediction
+            </h1>
+            <p class="lead">Train machine learning models and make predictions on insurance claims</p>
+        </div>
+    </div>
+
+    <!-- Model Training Section -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-cogs"></i> Model Training</h5>
+                </div>
+                <div class="card-body">
+                    <p>Train multiple machine learning models on the preprocessed data:</p>
+                    <button id="trainModelsBtn" class="btn btn-primary btn-lg">
+                        <i class="fas fa-play"></i> Train All Models
+                    </button>
+                    <div id="trainingProgress" class="mt-3" style="display: none;">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                        </div>
+                        <p class="mt-2 text-muted">Training models... This may take a few moments.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model Results -->
+    <div id="modelResults" class="row mb-4" style="display: none;">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-bar"></i> Model Performance Comparison</h5>
+                </div>
+                <div class="card-body">
+                    <div id="resultsTable"></div>
+                    <div id="comparisonPlot" class="plot-container mt-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prediction Form -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-calculator"></i> Make a Prediction</h5>
+                </div>
+                <div class="card-body">
+                    <form id="predictionForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="model_choice" class="form-label">Select Model</label>
+                                <select class="form-select" id="model_choice" name="model_choice" required>
+                                    <option value="">Choose a model...</option>
+                                    <option value="Random Forest">Random Forest (Fast)</option>
+                                    <option value="Logistic Regression">Logistic Regression (Fastest)</option>
+                                    <option value="Decision Tree">Decision Tree (Fast)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <button type="button" id="loadModelsBtn" class="btn btn-outline-secondary">
+                                    <i class="fas fa-download"></i> Load Saved Models
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Individual Features -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6><i class="fas fa-user"></i> Individual Features</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_01" class="form-label">ps_ind_01</label>
+                                        <input type="number" class="form-control" id="ps_ind_01" name="ps_ind_01" value="0" min="0" max="5">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_02_cat" class="form-label">ps_ind_02_cat</label>
+                                        <input type="number" class="form-control" id="ps_ind_02_cat" name="ps_ind_02_cat" value="1" min="1" max="4">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_03" class="form-label">ps_ind_03</label>
+                                        <input type="number" class="form-control" id="ps_ind_03" name="ps_ind_03" value="0" min="0" max="11">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_04_cat" class="form-label">ps_ind_04_cat</label>
+                                        <input type="number" class="form-control" id="ps_ind_04_cat" name="ps_ind_04_cat" value="0" min="0" max="1">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_05_cat" class="form-label">ps_ind_05_cat</label>
+                                        <input type="number" class="form-control" id="ps_ind_05_cat" name="ps_ind_05_cat" value="0" min="-1" max="6">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_06_bin" class="form-label">ps_ind_06_bin</label>
+                                        <select class="form-select" id="ps_ind_06_bin" name="ps_ind_06_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_07_bin" class="form-label">ps_ind_07_bin</label>
+                                        <select class="form-select" id="ps_ind_07_bin" name="ps_ind_07_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_08_bin" class="form-label">ps_ind_08_bin</label>
+                                        <select class="form-select" id="ps_ind_08_bin" name="ps_ind_08_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_09_bin" class="form-label">ps_ind_09_bin</label>
+                                        <select class="form-select" id="ps_ind_09_bin" name="ps_ind_09_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_10_bin" class="form-label">ps_ind_10_bin</label>
+                                        <select class="form-select" id="ps_ind_10_bin" name="ps_ind_10_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_11_bin" class="form-label">ps_ind_11_bin</label>
+                                        <select class="form-select" id="ps_ind_11_bin" name="ps_ind_11_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_12_bin" class="form-label">ps_ind_12_bin</label>
+                                        <select class="form-select" id="ps_ind_12_bin" name="ps_ind_12_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_13_bin" class="form-label">ps_ind_13_bin</label>
+                                        <select class="form-select" id="ps_ind_13_bin" name="ps_ind_13_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_14" class="form-label">ps_ind_14</label>
+                                        <input type="number" class="form-control" id="ps_ind_14" name="ps_ind_14" value="0" min="0" max="14">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_15" class="form-label">ps_ind_15</label>
+                                        <input type="number" class="form-control" id="ps_ind_15" name="ps_ind_15" value="0" min="0" max="14">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_16_bin" class="form-label">ps_ind_16_bin</label>
+                                        <select class="form-select" id="ps_ind_16_bin" name="ps_ind_16_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_17_bin" class="form-label">ps_ind_17_bin</label>
+                                        <select class="form-select" id="ps_ind_17_bin" name="ps_ind_17_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_ind_18_bin" class="form-label">ps_ind_18_bin</label>
+                                        <select class="form-select" id="ps_ind_18_bin" name="ps_ind_18_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Regional Features -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6><i class="fas fa-map-marker-alt"></i> Regional Features</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="ps_reg_01" class="form-label">ps_reg_01</label>
+                                        <input type="number" class="form-control" id="ps_reg_01" name="ps_reg_01" value="0.5" step="0.01" min="0" max="1">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="ps_reg_02" class="form-label">ps_reg_02</label>
+                                        <input type="number" class="form-control" id="ps_reg_02" name="ps_reg_02" value="0.5" step="0.01" min="0" max="2">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="ps_reg_03" class="form-label">ps_reg_03</label>
+                                        <input type="number" class="form-control" id="ps_reg_03" name="ps_reg_03" value="0.5" step="0.01" min="-1" max="3">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Car Features -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6><i class="fas fa-car"></i> Car Features</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_01_cat" class="form-label">ps_car_01_cat</label>
+                                        <input type="number" class="form-control" id="ps_car_01_cat" name="ps_car_01_cat" value="7" min="6" max="11">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_02_cat" class="form-label">ps_car_02_cat</label>
+                                        <input type="number" class="form-control" id="ps_car_02_cat" name="ps_car_02_cat" value="1" min="-1" max="1">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_03_cat" class="form-label">ps_car_03_cat</label>
+                                        <input type="number" class="form-control" id="ps_car_03_cat" name="ps_car_03_cat" value="0" min="-1" max="2">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_04_cat" class="form-label">ps_car_04_cat</label>
+                                        <input type="number" class="form-control" id="ps_car_04_cat" name="ps_car_04_cat" value="0" min="0" max="9">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_05_cat" class="form-label">ps_car_05_cat</label>
+                                        <input type="number" class="form-control" id="ps_car_05_cat" name="ps_car_05_cat" value="0" min="-1" max="1">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_06_cat" class="form-label">ps_car_06_cat</label>
+                                        <input type="number" class="form-control" id="ps_car_06_cat" name="ps_car_06_cat" value="1" min="0" max="17">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_07_cat" class="form-label">ps_car_07_cat</label>
+                                        <input type="number" class="form-control" id="ps_car_07_cat" name="ps_car_07_cat" value="1" min="-1" max="1">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_08_cat" class="form-label">ps_car_08_cat</label>
+                                        <input type="number" class="form-control" id="ps_car_08_cat" name="ps_car_08_cat" value="1" min="0" max="1">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_09_cat" class="form-label">ps_car_09_cat</label>
+                                        <input type="number" class="form-control" id="ps_car_09_cat" name="ps_car_09_cat" value="2" min="0" max="5">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_10_cat" class="form-label">ps_car_10_cat</label>
+                                        <input type="number" class="form-control" id="ps_car_10_cat" name="ps_car_10_cat" value="1" min="0" max="2">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_11_cat" class="form-label">ps_car_11_cat</label>
+                                        <input type="number" class="form-control" id="ps_car_11_cat" name="ps_car_11_cat" value="50" min="0" max="104">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_11" class="form-label">ps_car_11</label>
+                                        <input type="number" class="form-control" id="ps_car_11" name="ps_car_11" value="50" min="0" max="104">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_12" class="form-label">ps_car_12</label>
+                                        <input type="number" class="form-control" id="ps_car_12" name="ps_car_12" value="0.5" step="0.01" min="0" max="1">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_13" class="form-label">ps_car_13</label>
+                                        <input type="number" class="form-control" id="ps_car_13" name="ps_car_13" value="1.0" step="0.01" min="0" max="4">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_14" class="form-label">ps_car_14</label>
+                                        <input type="number" class="form-control" id="ps_car_14" name="ps_car_14" value="0.5" step="0.01" min="-1" max="1">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="ps_car_15" class="form-label">ps_car_15</label>
+                                        <input type="number" class="form-control" id="ps_car_15" name="ps_car_15" value="2.0" step="0.01" min="0" max="4">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Calculated Features -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6><i class="fas fa-calculator"></i> Calculated Features</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Continuous calculated features -->
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_01" class="form-label">ps_calc_01</label>
+                                        <input type="number" class="form-control" id="ps_calc_01" name="ps_calc_01" value="0.5" step="0.01" min="0" max="1">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_02" class="form-label">ps_calc_02</label>
+                                        <input type="number" class="form-control" id="ps_calc_02" name="ps_calc_02" value="0.5" step="0.01" min="0" max="1">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_03" class="form-label">ps_calc_03</label>
+                                        <input type="number" class="form-control" id="ps_calc_03" name="ps_calc_03" value="0.5" step="0.01" min="0" max="1">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_04" class="form-label">ps_calc_04</label>
+                                        <input type="number" class="form-control" id="ps_calc_04" name="ps_calc_04" value="2" min="0" max="5">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_05" class="form-label">ps_calc_05</label>
+                                        <input type="number" class="form-control" id="ps_calc_05" name="ps_calc_05" value="2" min="0" max="5">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_06" class="form-label">ps_calc_06</label>
+                                        <input type="number" class="form-control" id="ps_calc_06" name="ps_calc_06" value="7" min="0" max="20">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_07" class="form-label">ps_calc_07</label>
+                                        <input type="number" class="form-control" id="ps_calc_07" name="ps_calc_07" value="3" min="0" max="10">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_08" class="form-label">ps_calc_08</label>
+                                        <input type="number" class="form-control" id="ps_calc_08" name="ps_calc_08" value="9" min="0" max="15">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_09" class="form-label">ps_calc_09</label>
+                                        <input type="number" class="form-control" id="ps_calc_09" name="ps_calc_09" value="2" min="0" max="10">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_10" class="form-label">ps_calc_10</label>
+                                        <input type="number" class="form-control" id="ps_calc_10" name="ps_calc_10" value="8" min="0" max="20">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_11" class="form-label">ps_calc_11</label>
+                                        <input type="number" class="form-control" id="ps_calc_11" name="ps_calc_11" value="4" min="0" max="15">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_12" class="form-label">ps_calc_12</label>
+                                        <input type="number" class="form-control" id="ps_calc_12" name="ps_calc_12" value="1" min="0" max="10">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_13" class="form-label">ps_calc_13</label>
+                                        <input type="number" class="form-control" id="ps_calc_13" name="ps_calc_13" value="3" min="0" max="15">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_14" class="form-label">ps_calc_14</label>
+                                        <input type="number" class="form-control" id="ps_calc_14" name="ps_calc_14" value="8" min="0" max="20">
+                                    </div>
+                                    
+                                    <!-- Binary calculated features -->
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_15_bin" class="form-label">ps_calc_15_bin</label>
+                                        <select class="form-select" id="ps_calc_15_bin" name="ps_calc_15_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_16_bin" class="form-label">ps_calc_16_bin</label>
+                                        <select class="form-select" id="ps_calc_16_bin" name="ps_calc_16_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_17_bin" class="form-label">ps_calc_17_bin</label>
+                                        <select class="form-select" id="ps_calc_17_bin" name="ps_calc_17_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_18_bin" class="form-label">ps_calc_18_bin</label>
+                                        <select class="form-select" id="ps_calc_18_bin" name="ps_calc_18_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_19_bin" class="form-label">ps_calc_19_bin</label>
+                                        <select class="form-select" id="ps_calc_19_bin" name="ps_calc_19_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="ps_calc_20_bin" class="form-label">ps_calc_20_bin</label>
+                                        <select class="form-select" id="ps_calc_20_bin" name="ps_calc_20_bin">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-secondary me-2" onclick="fillRandomValues()">
+                                <i class="fas fa-random"></i> Fill Random Values
+                            </button>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-magic"></i> Make Prediction
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-bullseye"></i> Prediction Result</h5>
+                </div>
+                <div class="card-body">
+                    <div id="predictionResult" style="display: none;">
+                        <div class="text-center">
+                            <div id="riskBadge" class="badge fs-4 mb-3"></div>
+                            <h4 id="riskLevel"></h4>
+                            <p class="text-muted" id="confidence"></p>
+                            
+                            <div class="mt-4">
+                                <h6>Probability Breakdown:</h6>
+                                <div class="progress mb-2">
+                                    <div id="noClaimBar" class="progress-bar bg-success" role="progressbar"></div>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <small id="noClaimProb">No Claim: 0%</small>
+                                    <small id="claimProb">Claim: 0%</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="predictionPlaceholder" class="text-center text-muted">
+                        <i class="fas fa-arrow-left fa-2x mb-3"></i>
+                        <p>Fill out the form and click "Make Prediction" to see results</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model Info -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6><i class="fas fa-info-circle"></i> Available Models</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Random Forest
+                            <span class="badge bg-primary rounded-pill">Fast</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Logistic Regression
+                            <span class="badge bg-success rounded-pill">Fastest</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Decision Tree
+                            <span class="badge bg-info rounded-pill">Fast</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Train Models
+    $('#trainModelsBtn').click(function() {
+        $('#trainingProgress').show();
+        $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Training...');
+        
+        const startTime = Date.now();
+        
+        $.ajax({
+            url: '/train-models',
+            method: 'POST',
+            success: function(response) {
+                if (response.success) {
+                    displayModelResults(response.results, response.comparison_plot);
+                    $('#modelResults').show();
+                    
+                    // Show training completion message
+                    const endTime = Date.now();
+                    const actualDuration = ((endTime - startTime) / 1000).toFixed(2);
+                    
+                    $('#trainingProgress').html(`
+                        <div class="alert alert-success">
+                            <h6><i class="fas fa-check-circle"></i> Training Completed!</h6>
+                            <p class="mb-1"><strong>Duration:</strong> ${response.training_duration}</p>
+                            <p class="mb-1"><strong>Models Trained:</strong> ${response.total_models}</p>
+                            <p class="mb-0"><strong>Completed at:</strong> ${response.timestamp}</p>
+                        </div>
+                    `);
+                } else {
+                    alert('Error training models: ' + response.error);
+                }
+            },
+            error: function() {
+                alert('Error training models. Please try again.');
+            },
+            complete: function() {
+                $('#trainModelsBtn').prop('disabled', false).html('<i class="fas fa-play"></i> Train All Models');
+            }
+        });
+    });
+
+    // Load Saved Models
+    $('#loadModelsBtn').click(function() {
+        $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Loading...');
+        
+        $.ajax({
+            url: '/load-models',
+            method: 'POST',
+            success: function(response) {
+                if (response.success) {
+                    alert(`Success: ${response.message}\nLoaded models: ${response.loaded_models.join(', ')}`);
+                } else {
+                    alert('Info: ' + response.message);
+                }
+            },
+            error: function() {
+                alert('Error loading models. Please try again.');
+            },
+            complete: function() {
+                $('#loadModelsBtn').prop('disabled', false).html('<i class="fas fa-download"></i> Load Saved Models');
+            }
+        });
+    });
+
+    // Make Prediction
+    $('#predictionForm').submit(function(e) {
+        e.preventDefault();
+        
+        const submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Predicting...');
+        
+        $.ajax({
+            url: '/predict',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.error) {
+                    alert('Error: ' + response.error);
+                } else {
+                    displayPredictionResult(response);
+                }
+            },
+            error: function() {
+                alert('Error making prediction. Please try again.');
+            },
+            complete: function() {
+                submitBtn.prop('disabled', false).html('<i class="fas fa-magic"></i> Make Prediction');
+            }
+        });
+    });
+
+    function displayModelResults(results, plotImage) {
+        let tableHtml = '<div class="table-responsive"><table class="table table-striped">';
+        tableHtml += '<thead><tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1-Score</th><th>AUC</th><th>Training Time</th></tr></thead><tbody>';
+        
+        for (let model in results) {
+            let result = results[model];
+            tableHtml += `<tr>
+                <td><strong>${model}</strong></td>
+                <td>${(result.accuracy * 100).toFixed(2)}%</td>
+                <td>${(result.precision * 100).toFixed(2)}%</td>
+                <td>${(result.recall * 100).toFixed(2)}%</td>
+                <td>${(result.f1_score * 100).toFixed(2)}%</td>
+                <td>${(result.auc * 100).toFixed(2)}%</td>
+                <td>${result.training_time ? result.training_time.toFixed(3) + 's' : 'N/A'}</td>
+            </tr>`;
+        }
+        
+        tableHtml += '</tbody></table></div>';
+        $('#resultsTable').html(tableHtml);
+        
+        if (plotImage) {
+            $('#comparisonPlot').html(`<img src="data:image/png;base64,${plotImage}" alt="Model Comparison" class="img-fluid">`);
+        }
+    }
+
+    function displayPredictionResult(result) {
+        $('#predictionPlaceholder').hide();
+        $('#predictionResult').show();
+        
+        // Set risk level and badge
+        if (result.risk_level === 'High Risk') {
+            $('#riskBadge').removeClass().addClass('badge bg-danger fs-4 mb-3').text('HIGH RISK');
+            $('#riskLevel').text('High Risk').removeClass().addClass('text-danger');
+        } else {
+            $('#riskBadge').removeClass().addClass('badge bg-success fs-4 mb-3').text('LOW RISK');
+            $('#riskLevel').text('Low Risk').removeClass().addClass('text-success');
+        }
+        
+        $('#confidence').html(`
+            <strong>Confidence:</strong> ${result.confidence}<br>
+            <strong>Model Used:</strong> ${result.model_used}<br>
+            <strong>Features Processed:</strong> ${result.features_processed}
+        `);
+        
+        // Update probability bars
+        let noClaimPercent = parseFloat(result.probability_no_claim);
+        let claimPercent = parseFloat(result.probability_claim);
+        
+        $('#noClaimBar').css('width', noClaimPercent + '%');
+        $('#noClaimProb').text(`No Claim: ${result.probability_no_claim}`);
+        $('#claimProb').text(`Claim: ${result.probability_claim}`);
+    }
+});
+
+// Function to fill random values for testing
+function fillRandomValues() {
+    // Individual features
+    $('#ps_ind_01').val(Math.floor(Math.random() * 6));
+    $('#ps_ind_02_cat').val(Math.floor(Math.random() * 4) + 1);
+    $('#ps_ind_03').val(Math.floor(Math.random() * 12));
+    $('#ps_ind_04_cat').val(Math.floor(Math.random() * 2));
+    $('#ps_ind_05_cat').val(Math.floor(Math.random() * 7) - 1);
+    
+    // Binary features
+    const binaryFeatures = ['ps_ind_06_bin', 'ps_ind_07_bin', 'ps_ind_08_bin', 'ps_ind_09_bin', 'ps_ind_10_bin',
+                           'ps_ind_11_bin', 'ps_ind_12_bin', 'ps_ind_13_bin', 'ps_ind_16_bin', 'ps_ind_17_bin', 'ps_ind_18_bin'];
+    binaryFeatures.forEach(feature => {
+        $(`#${feature}`).val(Math.floor(Math.random() * 2));
+    });
+    
+    $('#ps_ind_14').val(Math.floor(Math.random() * 15));
+    $('#ps_ind_15').val(Math.floor(Math.random() * 15));
+    
+    // Regional features
+    $('#ps_reg_01').val((Math.random()).toFixed(2));
+    $('#ps_reg_02').val((Math.random() * 2).toFixed(2));
+    $('#ps_reg_03').val((Math.random() * 4 - 1).toFixed(2));
+    
+    // Car features
+    $('#ps_car_01_cat').val(Math.floor(Math.random() * 6) + 6);
+    $('#ps_car_02_cat').val(Math.floor(Math.random() * 3) - 1);
+    $('#ps_car_03_cat').val(Math.floor(Math.random() * 4) - 1);
+    $('#ps_car_04_cat').val(Math.floor(Math.random() * 10));
+    $('#ps_car_05_cat').val(Math.floor(Math.random() * 3) - 1);
+    $('#ps_car_06_cat').val(Math.floor(Math.random() * 18));
+    $('#ps_car_07_cat').val(Math.floor(Math.random() * 3) - 1);
+    $('#ps_car_08_cat').val(Math.floor(Math.random() * 2));
+    $('#ps_car_09_cat').val(Math.floor(Math.random() * 6));
+    $('#ps_car_10_cat').val(Math.floor(Math.random() * 3));
+    $('#ps_car_11_cat').val(Math.floor(Math.random() * 105));
+    $('#ps_car_11').val(Math.floor(Math.random() * 105));
+    $('#ps_car_12').val((Math.random()).toFixed(2));
+    $('#ps_car_13').val((Math.random() * 4).toFixed(2));
+    $('#ps_car_14').val((Math.random() * 2 - 1).toFixed(2));
+    $('#ps_car_15').val((Math.random() * 4).toFixed(2));
+    
+    // Calculated features
+    for (let i = 1; i <= 14; i++) {
+        if (i <= 3) {
+            $(`#ps_calc_${i.toString().padStart(2, '0')}`).val((Math.random()).toFixed(2));
+        } else {
+            $(`#ps_calc_${i.toString().padStart(2, '0')}`).val(Math.floor(Math.random() * 20));
+        }
+    }
+    
+    // Binary calculated features
+    const calcBinaryFeatures = ['ps_calc_15_bin', 'ps_calc_16_bin', 'ps_calc_17_bin', 'ps_calc_18_bin', 'ps_calc_19_bin', 'ps_calc_20_bin'];
+    calcBinaryFeatures.forEach(feature => {
+        $(`#${feature}`).val(Math.floor(Math.random() * 2));
+    });
+    
+    alert('Random values filled! You can now make a prediction.');
+}
+</script>
+{% endblock %}
